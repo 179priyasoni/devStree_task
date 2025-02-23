@@ -55,6 +55,11 @@ const ProjectModal: React.FC<ProjectModalProps> = ({
       },
     ]);
   };
+  const handleDeleteTask = (taskIndex: number) => {
+    setTasks((prevTasks) =>
+      prevTasks.filter((_, index) => index !== taskIndex)
+    );
+  };
 
   const handleAddSubtask = (taskIndex: number) => {
     setTasks((prevTasks) =>
@@ -127,9 +132,24 @@ const ProjectModal: React.FC<ProjectModalProps> = ({
             value={description}
             onChange={(e) => setDescription(e.target.value)}
           />
-          <h3 className="text-lg font-semibold">Tasks</h3>
+          <div>
+            <h3 className="text-lg font-semibold">Tasks</h3>
+          </div>
           {tasks.map((task, index) => (
-            <div key={task.id} className="border p-2 rounded mb-2">
+            <div
+              key={task.id}
+              className="border p-2 rounded mb-2 flex flex-col gap-2"
+            >
+              {editingProject && (
+                <div className="w-full flex justify-end">
+                  <button
+                    className="!text-white text-lg mb-2.5 !bg-red-500"
+                    onClick={() => handleDeleteTask(index)}
+                  >
+                    Delete task
+                  </button>
+                </div>
+              )}
               <input
                 type="text"
                 placeholder="Task Title"
@@ -181,10 +201,7 @@ const ProjectModal: React.FC<ProjectModalProps> = ({
               </button>
 
               {task.subtasks.map((subtask, subIndex) => (
-                <div
-                  key={subtask.id}
-                  className="ml-4 mt-1 p-2 border rounded !bg-gray-100"
-                >
+                <div key={subtask.id}>
                   <input
                     type="text"
                     placeholder="Subtask Title"

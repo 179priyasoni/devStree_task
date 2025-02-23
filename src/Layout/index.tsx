@@ -1,33 +1,29 @@
 import React, { useState } from "react";
 import { Outlet } from "react-router-dom";
 import Sidebar from "../components/Sidebar";
-import Navbar from "../components/Navbar";
 
 function Layout() {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
 
   return (
     <>
-      <div className="flex">
-        {/* Sidebar */}
+      <div className="flex relative">
+        <button
+          className="lg:hidden absolute top-4 left-4 z-50 bg-blue-500 text-white p-2 rounded"
+          onClick={() => setIsSidebarOpen(true)}
+        >
+          ☰
+        </button>
+
         <Sidebar
           isOpen={isSidebarOpen}
           closeSidebar={() => setIsSidebarOpen(false)}
         />
 
-        {/* Content Area */}
-        <div className={`w-full md:w-[calc(100%-18rem)] p-4 transition-all`}>
+        <div className={`w-full lg:w-[calc(100%-18rem)] transition-all`}>
           <Outlet />
         </div>
       </div>
-
-      {/* Overlay when Sidebar is open */}
-      {isSidebarOpen && (
-        <div
-          className="fixed inset-0 bg-black bg-opacity-50 md:hidden"
-          onClick={() => setIsSidebarOpen(false)}
-        />
-      )}
     </>
   );
 }

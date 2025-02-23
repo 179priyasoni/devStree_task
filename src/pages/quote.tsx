@@ -17,14 +17,14 @@ function Quote() {
   }, []);
 
   return (
-    <>
+    <div className="p-20">
       <div>Quote</div>
       {quote && (
         <div className="mt-6 p-4 bg-yellow-100 border-l-4 border-yellow-500">
           <p className="italic text-3xl text-blue-600">{quote}</p>
         </div>
       )}
-    </>
+    </div>
   );
 }
 

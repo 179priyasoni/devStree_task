@@ -136,8 +136,8 @@ function Projects() {
   );
 
   return (
-    <div className="container mx-auto p-6 overflow-hidden w-full">
-      <div className="flex justify-between items-center mb-4">
+    <div className="container mx-auto p-6 overflow-hidden w-full max-h-screen">
+      <div className="flex flex-col lg:flex-row lg:gap-0 gap-4 justify-between items-center mb-4">
         <h1 className="text-4xl font-semibold">Projects</h1>
         <input
           type="text"
@@ -156,113 +156,130 @@ function Projects() {
           Create Project
         </button>
       </div>
-
-      <DndContext collisionDetection={closestCenter} onDragEnd={handleDragEnd}>
-        <SortableContext
-          items={projects.map((project) => project.id)}
-          strategy={verticalListSortingStrategy}
+      <div className="w-full max-h-screen overflow-y-scroll pb-30">
+        <DndContext
+          collisionDetection={closestCenter}
+          onDragEnd={handleDragEnd}
         >
-          {filteredProjects.map((project) => {
-            const totalTasks = project.tasks.length;
-            const completedTasks = project.tasks.filter(
-              (task) => task.status === "Completed"
-            ).length;
-            const progress =
-              totalTasks > 0
-                ? Math.round((completedTasks / totalTasks) * 100)
-                : 0;
+          <SortableContext
+            items={projects.map((project) => project.id)}
+            strategy={verticalListSortingStrategy}
+          >
+            {filteredProjects.map((project) => {
+              const totalTasks = project.tasks.length;
+              const completedTasks = project.tasks.filter(
+                (task) => task.status === "Completed"
+              ).length;
+              const progress =
+                totalTasks > 0
+                  ? Math.round((completedTasks / totalTasks) * 100)
+                  : 0;
 
-            return (
-              <SortableItem key={project.id} id={project.id}>
-                <div className="p-4 mb-2 !bg-gray-100 rounded shadow-md">
-                  <div className="flex justify-between items-center">
-                    <div className="flex flex-col gap-3">
-                      <h2 className="text-lg font-bold">
-                        Project Name: {project.title}
-                      </h2>
-                      {project.description && (
-                        <h2 className="text-lg font-semibold">
-                          Project Description: {project.description}
+              return (
+                <SortableItem key={project.id} id={project.id}>
+                  <div className="p-4 mb-2 !bg-gray-100 rounded shadow-md">
+                    <div className="flex flex-col lg:flex-row  justify-between lg:items-center">
+                      <div className="flex flex-col gap-3">
+                        <h2 className="text-lg font-bold">
+                          Project Name: {project.title}
                         </h2>
-                      )}
-                      <h2 className="text-lg font-semibold">Tasks:</h2>
+                        {project.description && (
+                          <h2 className="text-lg font-semibold">
+                            Project Description: {project.description}
+                          </h2>
+                        )}
+                        <h2 className="text-lg font-semibold">Tasks:</h2>
 
-                      <DndContext
-                        collisionDetection={closestCenter}
-                        onDragEnd={(event) =>
-                          handleTaskDragEnd(event, project.id)
-                        }
-                      >
-                        <SortableContext
-                          items={project.tasks.map((task) => task.id)}
-                          strategy={verticalListSortingStrategy}
+                        <DndContext
+                          collisionDetection={closestCenter}
+                          onDragEnd={(event) =>
+                            handleTaskDragEnd(event, project.id)
+                          }
                         >
-                          <ul className="list-disc ml-5">
-                            {project.tasks.length > 0 ? (
-                              project.tasks.map((task) => (
-                                <SortableItem key={task.id} id={task.id}>
-                                  <li className="text-lg font-semibold ml-12 mb-8">
-                                    {task.title} - {task.status}
-                                    {task.subtasks.length > 0 && (
-                                      <ul className="list-circle mx-4 mt-1">
-                                        {task.subtasks.map((subtask) => (
-                                          <li
-                                            key={subtask.id}
-                                            className="text-md font-medium"
-                                          >
-                                            Subtask: {subtask.title}
-                                          </li>
-                                        ))}
-                                      </ul>
-                                    )}
-                                  </li>
-                                </SortableItem>
-                              ))
-                            ) : (
-                              <li className="text-lg font-semibold">
-                                No Tasks
-                              </li>
-                            )}
-                          </ul>
-                        </SortableContext>
-                      </DndContext>
+                          <SortableContext
+                            items={project.tasks.map((task) => task.id)}
+                            strategy={verticalListSortingStrategy}
+                          >
+                            <ul className="list-disc ml-5">
+                              {project.tasks.length > 0 ? (
+                                project.tasks.map((task) => {
+                                  const isOverdue =
+                                    task.dueDate &&
+                                    new Date(task.dueDate) < new Date() &&
+                                    task.status !== "Completed";
 
-                      <h2
-                        className={`text-lg font-semibold ${
-                          progress === 100
-                            ? "text-green-500"
-                            : progress === 0
-                            ? "text-red-500"
-                            : "text-blue-500"
-                        }`}
-                      >
-                        Project Progress: {progress}%
-                      </h2>
-                    </div>
+                                  return (
+                                    <SortableItem key={task.id} id={task.id}>
+                                      <li
+                                        className={`text-lg font-semibold mx-12 mb-8 ${
+                                          isOverdue
+                                            ? "text-red-500 font-bold"
+                                            : ""
+                                        }`}
+                                      >
+                                        {task.title} - {task.status} -{" "}
+                                        {task.dueDate ? task.dueDate : "N/A"}
+                                        {task.subtasks.length > 0 && (
+                                          <ul className="list-circle mx-4 mt-1">
+                                            {task.subtasks.map((subtask) => (
+                                              <li
+                                                key={subtask.id}
+                                                className="text-md font-medium"
+                                              >
+                                                Subtask: {subtask.title}
+                                              </li>
+                                            ))}
+                                          </ul>
+                                        )}
+                                      </li>
+                                    </SortableItem>
+                                  );
+                                })
+                              ) : (
+                                <li className="text-lg font-semibold">
+                                  No Tasks
+                                </li>
+                              )}
+                            </ul>
+                          </SortableContext>
+                        </DndContext>
 
-                    {/* Update & Delete Buttons */}
-                    <div className="space-x-2">
-                      <button
-                        className="px-3 py-1 !bg-green-500 text-white rounded"
-                        onClick={(e) => handleUpdateProject(e, project)}
-                      >
-                        Update
-                      </button>
-                      <button
-                        className="px-3 py-1 !bg-red-500 text-white rounded"
-                        onClick={(e) => handleDeleteProject(e, project.id)}
-                      >
-                        Delete
-                      </button>
+                        <h2
+                          className={`text-lg font-semibold ${
+                            progress === 100
+                              ? "text-green-500"
+                              : progress === 0
+                              ? "text-red-500"
+                              : "text-blue-500"
+                          }`}
+                        >
+                          Project Progress: {progress}%
+                        </h2>
+                      </div>
+
+                      {/* Update & Delete Buttons */}
+                      <div className="space-x-2 mt-5 lg:mt-0">
+                        <button
+                          className="px-3 py-1 !bg-green-500 text-white rounded"
+                          onClick={(e) => handleUpdateProject(e, project)}
+                        >
+                          Update
+                        </button>
+                        <button
+                          className="px-3 py-1 !bg-red-500 text-white rounded"
+                          onClick={(e) => handleDeleteProject(e, project.id)}
+                        >
+                          Delete
+                        </button>
+                      </div>
                     </div>
                   </div>
-                </div>
-              </SortableItem>
-            );
-          })}
-        </SortableContext>
-      </DndContext>
-
+                </SortableItem>
+              );
+            })}
+          </SortableContext>
+        </DndContext>
+      </div>
       {isOpen && (
         <ProjectModal
           isOpen={isOpen}
