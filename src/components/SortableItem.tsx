@@ -3,7 +3,7 @@ import { useSortable } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
 
 type SortableItemProps = {
-  id: number;
+  id: number | string;
   children: React.ReactNode;
 };
 
@@ -20,7 +20,7 @@ const SortableItem: React.FC<SortableItemProps> = ({ id, children }) => {
     <div
       ref={setNodeRef}
       style={style}
-      className="relative   rounded shadow-md"
+      className="relative  rounded shadow-md"
     >
       <div
         {...attributes}

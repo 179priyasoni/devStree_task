@@ -9,13 +9,13 @@ import {
 import SortableItem from "../components/SortableItem";
 
 export type SubTaskType = {
-  id: number;
+  id: string | number;
   title: string;
   status: string;
 };
 
 export type TaskType = {
-  id: number;
+  id: string | number;
   title: string;
   description: string;
   dueDate: string;
@@ -24,7 +24,7 @@ export type TaskType = {
 };
 
 export type ProjectType = {
-  id: number;
+  id: string | number;
   title: string;
   description: string;
   tasks: TaskType[];
@@ -60,7 +60,7 @@ function Projects() {
           p.id === project.id ? project : p
         );
       } else {
-        updatedProjects = [...prevProjects, { ...project, id: Date.now() }];
+        updatedProjects = [...prevProjects, { ...project, id:  crypto.randomUUID()  }];
       }
       localStorage.setItem("projects", JSON.stringify(updatedProjects));
       return updatedProjects;
@@ -70,7 +70,7 @@ function Projects() {
     setEditingProject(null);
   };
 
-  const handleDeleteProject = (e: React.MouseEvent, projectId: number) => {
+  const handleDeleteProject = (e: React.MouseEvent, projectId: number | string) => {
     e.stopPropagation();
     const updatedProjects = projects.filter(
       (project) => project.id !== projectId
@@ -99,7 +99,7 @@ function Projects() {
     });
   };
 
-  const handleTaskDragEnd = (event: any, projectId: number) => {
+  const handleTaskDragEnd = (event: any, projectId: number | string) => {
     const { active, over } = event;
     if (!over || active.id === over.id) return;
 

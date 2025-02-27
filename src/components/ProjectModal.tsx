@@ -46,7 +46,7 @@ const ProjectModal: React.FC<ProjectModalProps> = ({
     setTasks((prevTasks) => [
       ...prevTasks,
       {
-        id: prevTasks.length > 0 ? prevTasks[prevTasks.length - 1].id + 1 : 1,
+        id:  crypto.randomUUID() ,
         title: "",
         description: "",
         dueDate: "",
@@ -69,7 +69,7 @@ const ProjectModal: React.FC<ProjectModalProps> = ({
               ...task,
               subtasks: [
                 ...task.subtasks,
-                { id: Date.now(), title: "", status: "Pending" },
+                { id:  crypto.randomUUID() , title: "", status: "Pending" },
               ],
             }
           : task
@@ -102,7 +102,7 @@ const ProjectModal: React.FC<ProjectModalProps> = ({
     }
 
     const newProject = {
-      id: editingProject?.id || Date.now(),
+      id: editingProject?.id ||  crypto.randomUUID() ,
       title,
       description,
       dueDate,
